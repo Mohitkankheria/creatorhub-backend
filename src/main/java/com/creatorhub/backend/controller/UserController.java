@@ -2,6 +2,7 @@ package com.creatorhub.backend.controller;
 
 import com.creatorhub.backend.entity.User;
 import com.creatorhub.backend.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         return userService.createUser(user);
     }
 
@@ -28,5 +29,16 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
+    }
+    @PutMapping("/{id}")
+    public User updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody User user)  {
+
+        return userService.updateUser(id, user);
+    }
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
     }
 }
