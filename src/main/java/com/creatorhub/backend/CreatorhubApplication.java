@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class
-CreatorhubApplication {
+	CreatorhubApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CreatorhubApplication.class, args);

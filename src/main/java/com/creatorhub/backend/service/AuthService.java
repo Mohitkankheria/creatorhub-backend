@@ -7,6 +7,10 @@ import com.creatorhub.backend.exception.EmailAlreadyExistsException;
 import com.creatorhub.backend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.creatorhub.backend.dto.LoginResponse;
+
+import com.creatorhub.backend.dto.LoginRequest;
+import com.creatorhub.backend.exception.UserNotFoundException;
 
 @Service
 public class AuthService {
@@ -46,6 +50,25 @@ public class AuthService {
                 savedUser.getId(),
                 savedUser.getName(),
                 savedUser.getEmail()
+        );
+    }
+    public LoginResponse login(LoginRequest request) {
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new UserNotFoundException("Invalid email or password"));
+
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword())) {
+
+            throw new UserNotFoundException("Invalid email or password");
+        }
+
+        return new LoginResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail()
         );
     }
 }
