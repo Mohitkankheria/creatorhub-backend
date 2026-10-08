@@ -4,19 +4,36 @@ import com.creatorhub.backend.entity.User;
 import com.creatorhub.backend.exception.UserNotFoundException;
 import com.creatorhub.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
+import com.creatorhub.backend.exception.EmailAlreadyExistsException;
 
 @Service
 public class UserService {
 
+    private final PasswordEncoder passwordEncoder;
+
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User createUser(User user) {
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new EmailAlreadyExistsException("Email already registered");
+        }
+
+        String encodedPassword =
+                passwordEncoder.encode(user.getPassword());
+
+        user.setPassword(encodedPassword);
+
         return userRepository.save(user);
     }
 

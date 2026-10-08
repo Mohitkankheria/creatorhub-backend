@@ -1,38 +1,21 @@
-package com.creatorhub.backend.entity;
+package com.creatorhub.backend.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.Valid;
-import jakarta.persistence.Column;
 
-@Entity
-@Table(name = "users")
-public class User {
+public class SignupRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     @NotBlank(message = "Name is required")
     private String name;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email must be valid")
-    @Column(unique = true)
     private String email;
+
     @NotBlank(message = "Password is required")
     private String password;
 
-    public User() {
-    }
-
-    public User(String name, String email) {
-        this.name = name;
-        this.email = email;
-    }
-
-    public Long getId() {
-        return id;
+    public SignupRequest() {
     }
 
     public String getName() {
@@ -50,6 +33,7 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
     public String getPassword() {
         return password;
     }

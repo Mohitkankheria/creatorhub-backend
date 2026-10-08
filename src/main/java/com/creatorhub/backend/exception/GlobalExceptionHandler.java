@@ -1,6 +1,7 @@
 package com.creatorhub.backend.exception;
 
 import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -44,6 +45,20 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 errorResponse,
                 HttpStatus.BAD_REQUEST
+        );
+    }
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(
+            EmailAlreadyExistsException exception) {
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                409,
+                exception.getMessage()
+        );
+
+        return new ResponseEntity<>(
+                errorResponse,
+                HttpStatus.CONFLICT
         );
     }
 }
