@@ -61,6 +61,27 @@ public class UserService {
 
         return userRepository.save(existingUser);
     }
+
+    // Get logged-in user's profile
+    public User getMyProfile(String email) {
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UserNotFoundException("User not found"));
+    }
+
+    // Update logged-in user's profile
+    public User updateMyProfile(String email, User updatedUser) {
+
+        User existingUser = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UserNotFoundException("User not found"));
+
+        existingUser.setName(updatedUser.getName());
+
+        return userRepository.save(existingUser);
+    }
+
     //delete krne ke liye
     public void deleteUser(Long id) {
 

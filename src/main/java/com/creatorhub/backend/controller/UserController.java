@@ -4,6 +4,8 @@ import com.creatorhub.backend.entity.User;
 import com.creatorhub.backend.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 
@@ -41,4 +43,21 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
+
+    // Get logged-in user's profile
+    @GetMapping("/me")
+    public User getMyProfile(Authentication authentication) {
+        return userService.getMyProfile(authentication.getName());
+    }
+
+    // Update logged-in user's profile
+    @PutMapping("/me")
+    public User updateMyProfile(
+            Authentication authentication,
+            @RequestBody User updatedUser) {
+
+        return userService.updateMyProfile(
+                authentication.getName(), updatedUser);
+    }
+
 }
