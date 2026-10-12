@@ -1,32 +1,35 @@
+
 package com.creatorhub.backend.service;
 
+import com.creatorhub.backend.dto.LoginRequest;
+import com.creatorhub.backend.dto.LoginResponse;
 import com.creatorhub.backend.dto.SignupRequest;
 import com.creatorhub.backend.dto.SignupResponse;
 import com.creatorhub.backend.entity.User;
 import com.creatorhub.backend.exception.EmailAlreadyExistsException;
+import com.creatorhub.backend.exception.UserNotFoundException;
 import com.creatorhub.backend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.creatorhub.backend.dto.LoginResponse;
-
-import com.creatorhub.backend.dto.LoginRequest;
-import com.creatorhub.backend.exception.UserNotFoundException;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public AuthService(
             UserRepository userRepository,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
-    public SignupResponse signup(SignupRequest request){
+    public SignupResponse signup(SignupRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new EmailAlreadyExistsException(
@@ -52,6 +55,7 @@ public class AuthService {
                 savedUser.getEmail()
         );
     }
+
     public LoginResponse login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
@@ -65,10 +69,14 @@ public class AuthService {
             throw new UserNotFoundException("Invalid email or password");
         }
 
+        // Generate JWT after successful password verification
+        String token = jwtService.generateToken(user.getEmail());
+
         return new LoginResponse(
                 user.getId(),
                 user.getName(),
-                user.getEmail()
+                user.getEmail(),
+                token
         );
     }
 }

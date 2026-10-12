@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.Valid;
 import jakarta.persistence.Column;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "users")
 public class User {
@@ -21,6 +21,7 @@ public class User {
     @Column(unique = true)
     private String email;
     @NotBlank(message = "Password is required")
+    @JsonIgnore
     private String password;
 
     public User() {
